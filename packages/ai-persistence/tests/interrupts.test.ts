@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { EventType, chat, defineChatMiddleware } from '@tanstack/ai'
+import { z } from 'zod'
+import {
+  EventType,
+  chat,
+  defineChatMiddleware,
+  toolDefinition,
+} from '@tanstack/ai'
 import type { AnyTextAdapter, StreamChunk, Tool } from '@tanstack/ai'
 import { memoryPersistence } from '../src/memory'
 import { withPersistence } from '../src/middleware'
@@ -120,15 +126,22 @@ async function persistClientToolTurn(
   return first
 }
 
-const clientTool = (name: string): Tool => ({
-  name,
-  description: `${name} client tool`,
-})
+const clientToolInputSchema = z.object({ query: z.string() })
 
-const approvalClientTool = (name: string): Tool => ({
-  ...clientTool(name),
-  needsApproval: true,
-})
+const clientTool = (name: string): Tool =>
+  toolDefinition({
+    name,
+    description: name + ' client tool',
+    inputSchema: clientToolInputSchema,
+  })
+
+const approvalClientTool = (name: string): Tool =>
+  toolDefinition({
+    name,
+    description: name + ' client tool',
+    inputSchema: clientToolInputSchema,
+    needsApproval: true,
+  })
 
 describe('interrupt persistence', () => {
   it('persists RUN_FINISHED interrupt outcomes as pending interrupt records', async () => {
