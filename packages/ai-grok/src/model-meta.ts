@@ -69,6 +69,27 @@ const GROK_4_6 = {
   },
 } as const satisfies ModelMeta
 
+const GROK_4_7 = {
+  name: 'grok-4.7',
+  context_window: 500_000,
+  max_output_tokens: 450_000,
+  supports: {
+    input: ['text', 'image', 'document'],
+    output: ['text'],
+    capabilities: ['reasoning', 'structured_outputs', 'tool_calling'],
+    tools: [],
+  },
+  pricing: {
+    input: {
+      normal: 1.6,
+      cached: 0.4,
+    },
+    output: {
+      normal: 4.8,
+    },
+  },
+} as const satisfies ModelMeta
+
 export type GrokProviderToolKind =
   | 'web_search'
   | 'x_search'
@@ -237,6 +258,7 @@ const GROK_BUILD_0_1 = {
  * Grok chat models supported by the Responses adapter.
  */
 export const GROK_CHAT_MODELS = [
+  GROK_4_7.name,
   GROK_4_5.name,
   GROK_4_6.name,
   GROK_BUILD_0_1.name,
@@ -364,6 +386,7 @@ export type GrokModelInputModalitiesByName = {
   [GROK_BUILD_0_1.name]: typeof GROK_BUILD_0_1.supports.input
   [GROK_4_5.name]: typeof GROK_4_5.supports.input
   [GROK_4_6.name]: typeof GROK_4_6.supports.input
+  [GROK_4_7.name]: typeof GROK_4_7.supports.input
 }
 
 /**
